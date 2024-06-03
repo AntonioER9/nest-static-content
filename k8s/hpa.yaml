@@ -1,0 +1,29 @@
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: cda-${CI_PROJECT_NAME}
+  namespace: ${NAMESPACE}
+  labels:
+    ApplicationName: cda-${CI_PROJECT_NAME}
+    enviroment: ${CI_ENVIRONMENT_NAME}
+    app: cda-${CI_PROJECT_NAME}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: cda-${CI_PROJECT_NAME}
+  minReplicas: ${K8S_MIN_REPLICAS}
+  maxReplicas: ${K8S_MAX_REPLICAS}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: ${CPU_AU}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: ${MEM_AU}

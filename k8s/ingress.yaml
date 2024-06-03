@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: cda-${CI_PROJECT_NAME}
+  namespace: ${NAMESPACE}
+  labels:
+    ApplicationName: cda-${CI_PROJECT_NAME}
+    enviroment: ${CI_ENVIRONMENT_NAME}
+    app: cda-${CI_PROJECT_NAME}
+  annotations:
+    kubernetes.io/ingress.class: ${K8S_INGRESS_TARGET_CLASS}
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      more_set_headers "Permissions-Policy: autoplay=(), encrypted-media=(), fullscreen=(), geolocation=(), microphone=(), midi=()";
+      more_clear_headers "Server";
+spec:
+  rules:
+    - host: cda-${CI_PROJECT_NAME}.${HOST}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: cda-${CI_PROJECT_NAME}
+                port:
+                  number: ${APP_PORT}

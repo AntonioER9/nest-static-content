@@ -1,0 +1,14 @@
+import { Entity, Property } from '@mikro-orm/core';
+import { ApiProperty } from '@nestjs/swagger';
+import { BaseContentEntity } from 'modules/content/entities/base-content.entity';
+
+@Entity({ tableName: 'payment_methods' })
+export class PaymentMethod extends BaseContentEntity {
+  @Property()
+  @ApiProperty()
+  name!: string;
+
+  @Property()
+  @ApiProperty()
+  icon?: string = '';
+}
